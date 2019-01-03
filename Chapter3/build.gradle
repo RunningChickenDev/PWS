@@ -1,0 +1,26 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+mainClassName='pws.Main'
+
+ext.jmeVersion = "[3.1,)"
+
+dependencies {
+	compile "org.jmonkeyengine:jme3-core:$jmeVersion"
+	compile "org.jmonkeyengine:jme3-desktop:$jmeVersion"
+	compile "org.jmonkeyengine:jme3-lwjgl:$jmeVersion"
+	compile "org.jmonkeyengine:jme3-lwjgl3:$jmeVersion"
+	compile "org.jmonkeyengine:jme3-terrain:$jmeVersion"
+	//compile "org.jmonkeyengine:jme3-testdata:$jmeVersion"
+}
+
+
+repositories {
+    jcenter()
+}
+
+run {
+	standardInput = System.in
+}

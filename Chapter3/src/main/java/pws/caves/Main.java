@@ -23,7 +23,24 @@ import com.jme3.texture.Texture;
 
 public class Main extends SimpleApplication implements ActionListener {
 
+	private static boolean concave = true;
+	
 	public static void main(String[] args) {
+		if(args.length > 0) {
+			System.out.println("Caves recieved argument: " + args[0]);
+			switch(args[0]) {
+			case "convex":
+				System.out.println("Using convex");
+				concave = false;
+				break;
+			default:
+				System.out.println("Defaulting to concave ...");
+			case "concave":
+				System.out.println("Using concave");
+//				concave = true;		// This is unnecessary, as it is initialized as true
+				break;
+			}
+		}
 		Main m = new Main();
 		m.start();
 	}
@@ -42,7 +59,7 @@ public class Main extends SimpleApplication implements ActionListener {
 		 * Currently set to use dead points
 		 */
 		List<Vector2f> deadPoints = holeOut(130, 100, 140, 120);
-		SimpleTerrain tt = new SimpleTerrain(h, deadPoints);
+		SimpleTerrain tt = (concave)? new ConcaverTerrain(h, deadPoints) : new ConvexerTerrain(h, deadPoints);
 		Geometry t = new Geometry("Simple Terrain", tt);
 		t.setMaterial(mat);
 		rootNode.attachChild(t);

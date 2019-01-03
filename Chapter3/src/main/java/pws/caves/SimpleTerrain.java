@@ -1,5 +1,6 @@
 package pws.caves;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jme3.math.Vector2f;
@@ -9,10 +10,15 @@ import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.terrain.heightmap.HeightMap;
 import com.jme3.util.BufferUtils;
 
-public class SimpleTerrain extends Mesh {
+public abstract class SimpleTerrain extends Mesh {
 
 	public SimpleTerrain(HeightMap h, List<Vector2f> deadPoints) {
 		int size = h.getSize();
+		
+		List<Integer> deadIdx = new ArrayList<>();
+		for(Vector2f p : deadPoints) {
+			deadIdx.add((int) (p.y*size+p.x));
+		}
 		
 		Vector3f[] vertices = new Vector3f[size*size];
 		Vector3f[] normals = new Vector3f[size*size];
@@ -28,7 +34,9 @@ public class SimpleTerrain extends Mesh {
 				} else {
 					normals[idx] = Vector3f.UNIT_Y;
 				}
-				if(z != size-1 && x != size-1 && !deadPoints.contains(new Vector2f(x,z))) {
+				
+				boolean connect = (deadIdx.contains(idx))? deadPoint(vertices[idx]) : true;
+				if(z != size-1 && x != size-1 && connect) {
 					indices[idC++] = idx;
 					indices[idC++] = idx+size+1;
 					indices[idC++] = idx+size;
@@ -45,6 +53,8 @@ public class SimpleTerrain extends Mesh {
 		updateBound();
 		updateCounts();
 	}
+	
+	protected abstract boolean deadPoint(Vector3f vert);
 	
 	private Vector3f getNormal(int x, int z, HeightMap h) {
 		Vector3f v0 = new Vector3f(x, h.getScaledHeightAtPoint(x, z), z);
